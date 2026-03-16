@@ -8,6 +8,15 @@ public class User {
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("Username não pode ser vazio.");
         }
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email não pode ser vazio."); //Existe uma redundância nesse teste em relação ao próximo, mas preferi fazer assim para imprimir um texto apropriado.
+        }
+
+        else if (!email.contains("@") || !email.contains(".com")) {
+            throw new IllegalArgumentException("Domínio do email inválido.");
+        }
+        
         this.username = username;
         this.email = email;
     }
