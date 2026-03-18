@@ -1,10 +1,12 @@
 package com.nexus.service;
 
-import com.nexus.model.*;
-import com.nexus.exception.NexusValidationException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.nexus.exception.NexusValidationException;
+import com.nexus.model.Task;
+import com.nexus.model.User;
 
 public class LogProcessor {
 
@@ -34,7 +36,7 @@ public class LogProcessor {
                                 System.out.println("[LOG] Usuário criado: " + p[1]);
                             }
                             case "CREATE_TASK" -> {
-                                Task t = new Task(p[1], LocalDate.parse(p[2]));
+                                Task t = new Task(p[1], LocalDate.parse(p[2]), Integer.parseInt(p[3]));
                                 workspace.addTask(t);
                                 System.out.println("[LOG] Tarefa criada: " + p[1]);
                             }
