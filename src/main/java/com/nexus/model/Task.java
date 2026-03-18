@@ -17,8 +17,9 @@ public class Task {
     private String title;
     private TaskStatus status;
     private User owner;
+    private final int estimatedEffort;
 
-    public Task(String title, LocalDate deadline) {
+    public Task(String title, LocalDate deadline, int estimatedEffort) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Titulo não pode ser vazio.");
         }
@@ -27,6 +28,7 @@ public class Task {
         this.deadline = deadline;
         this.title = title;
         this.status = TaskStatus.TO_DO;
+        this.estimatedEffort = estimatedEffort;
         
         // Ação do Aluno:
         totalTasksCreated++; 
@@ -36,8 +38,8 @@ public class Task {
      * Move a tarefa para IN_PROGRESS.
      * Regra: Só é possível se houver um owner atribuído e não estiver BLOCKED.
      */
-    public void moveToInProgress(User user) {
-        // TODO: Implementar lógica de proteção e atualizar activeWorkload
+    public void moveToInProgress(User user) { // Consertar ainda, quando criar assignUser
+        // TODO: Implementar lógica de proteção e atualizar activeWorkload 
         // Se falhar, incrementar totalValidationErrors e lançar NexusValidationException
         if (user == null || this.status == TaskStatus.BLOCKED){  
             totalValidationErrors++;
@@ -81,4 +83,5 @@ public class Task {
     public String getTitle() { return title; }
     public LocalDate getDeadline() { return deadline; }
     public User getOwner() { return owner; }
+    public int getEstimatedEffort() {return estimatedEffort;}
 }
