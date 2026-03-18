@@ -111,24 +111,34 @@ public class Main {
             System.out.print("Prazo (AAAA-MM-DD): ");
             LocalDate deadline = LocalDate.parse(scanner.nextLine());
             System.out.print("Horas estimadas para conclusão: ");
-            int estimatedEffort =  scanner.nextInt(); //Concertar exeção 
+            int estimatedEffort =  scanner.nextInt();
 
             Task newTask = new Task(title, deadline, estimatedEffort);
             workspace.addTask(newTask);
             System.out.println("[OK] Tarefa adicionada ao backlog.");
-        } catch (DateTimeParseException e) {
-            System.err.println("[ERRO] Formato de data inválido. Use AAAA-MM-DD.");
+        } 
+        
+        catch (DateTimeParseException e) {
+            System.err.println("Horas estimadas deve ser um número.");
+        } 
+        
+        catch (java.util.InputMismatchException e){
+            throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
         }
     }
 
     private static void addProject(){
-        System.out.print("Nome do Projeto: ");
-            String name = scanner.nextLine();
-            System.out.print("Orçamento de horas do projeto: ");
-            int totalBudget =  scanner.nextInt(); //Concertar exeção 
+            try {
+                System.out.print("Nome do Projeto: ");
+                String name = scanner.nextLine();
+                System.out.print("Orçamento de horas do projeto: ");
+                int totalBudget =  scanner.nextInt();
 
-            Project newProject = new Project(name,totalBudget);
-            System.out.println("[OK] Projeto foi criado com sucesso.");
+                Project newProject = new Project(name,totalBudget);
+                System.out.println("[OK] Projeto foi criado com sucesso.");
+            } catch (java.util.InputMismatchException e) {
+                throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
+            }
     }
 
     /**
