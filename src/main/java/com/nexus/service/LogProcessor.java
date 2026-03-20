@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.nexus.exception.NexusValidationException;
 import com.nexus.model.Task;
+import com.nexus.model.TaskStatus;
 import com.nexus.model.User;
 
 public class LogProcessor {
@@ -40,9 +41,34 @@ public class LogProcessor {
                                 workspace.addTask(t);
                                 System.out.println("[LOG] Tarefa criada: " + p[1]);
                             }
+                            case "ASSIGN_USER" -> {
+
+                            }
+                            case "CHANGE_STATUS" -> {
+                                if(workspace.getTask(Integer.parseInt(p[1])) == null){ // Para id vazio lançar exceção ou apenas dizer que não existe?
+                                    System.out.println("A tarefa não existe: ");
+                                    return;
+                                }
+                                switch (p[2]) {
+                                    case "IN_PROGRESS" -> {
+                                         
+                                    }
+                                    case "DONE" -> {
+
+                                    }
+                                    case "BLOCKED" -> {
+
+                                    }
+                                    default -> System.err.println("[WARN] Status desconhecida: " + p[2]);
+                                }
+                            }
+                            case "REPORT_STATUS" -> {
+                                workspace.reportStatus();
+                            }
                             default -> System.err.println("[WARN] Ação desconhecida: " + action);
                         }
                     } catch (NexusValidationException e) {
+                        Task.totalValidationErrors++;
                         System.err.println("[ERRO DE REGRAS] Falha no comando '" + line + "': " + e.getMessage());
                     }
                 }

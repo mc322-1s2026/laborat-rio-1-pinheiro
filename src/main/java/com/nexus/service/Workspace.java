@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
+
 
 public class Workspace {
     private final List<Task> tasks = new ArrayList<>();
@@ -24,9 +26,27 @@ public class Workspace {
         return Collections.unmodifiableList(tasks);
     }
 
+    /*Imprime os três usuarios com mais tasks DONE */
     public void topPerformers(List<Task> tasks){
-        //List<Task> topTasks = tasks.stream()
-        //.sorted(Comparator.comparing(Task::));
+        Map<User, Long> topOwners = tasks.stream()
+            .filter(Task -> Task.getStatus() == TaskStatus.DONE)
+            .collect(Collectors.groupingBy(
+                Task::getOwner,
+                Collectors.counting()
+            ));
+        
+        if(topOwners.isEmpty()){
+            System.out.println("\n[!] Nenhum usuario possui tarefas concluidas.");
+            return;
+        }
+
+        topOwners.entrySet().stream()
+            .sorted(Map.Entry.<User,Long>comparingByValue().reversed())
+            .limit(3)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList())
+            .forEach(System.out::println);
+
     }
 
     /*Imprime o(s) status com maior(es) número(s) de Tasks, exceto DONE */
@@ -42,6 +62,11 @@ public class Workspace {
         long maxCount = topTasks.values().stream()
             .max(Long::compare).get();
         
+        if(maxCount == 0){
+            System.out.println("\n[!] Nenhuma tarefa no sistema, exceto com status DONE.");
+            return;
+        }
+
         topTasks.entrySet().stream()
             .filter(entry -> entry.getValue() == maxCount)
             .map(Map.Entry::getKey)
@@ -65,5 +90,26 @@ public class Workspace {
             .collect(Collectors.toList())
             .forEach(System.out::println);
 
+    }
+
+    public Task getTask(int id){
+        return tasks.stream()
+            .filter(t -> t.getId() == id).findFirst()
+            .orElse(null);
+    }
+
+    public void reportStatus(){
+        if(tasks.isEmpty()){
+            System.out.println("\n[!] Nenhuma tarefa no sistema.");
+            return;
+        }
+        System.out.println("\nUsuarios com carga de trabalho maior que 10:");
+        overloadedUsers(tasks);
+
+        System.out.println("\nStatus com maior número de tasks:");
+        globalBottleNecks(tasks);
+
+        System.out.println("\nUsuarios com mais taks concluidas");
+        topPerformers(tasks);
     }
 }

@@ -47,9 +47,9 @@ public class Main {
                 }
                 case "1" -> addUser();
                 case "2" -> addTask();
-                case "3" -> addProject();
-                case "4" -> listTasks();
-                case "5" -> {
+                //case "3" -> addProject();
+                case "3" -> listTasks();
+                case "4" -> {
                     System.out.println("1. Carregar Log V1 (Básico)\n2. Carregar Log V2 (Desafio)");
                     String logChoice = scanner.nextLine();
                     String file = (logChoice.equals("1")) ? "log_v1.txt" : "log_v2.txt";
@@ -72,9 +72,9 @@ public class Main {
             ======= NEXUS CORE: MENU =======
             1. Adicionar Usuário
             2. Adicionar Tarefa
-            3. Adicionar Projeto
-            4. Listar Todas as Tarefas
-            5. Processar Log de Ações
+            //3. Adicionar Projeto
+            3. Listar Todas as Tarefas
+            4. Processar Log de Ações
             0. Sair
             Escolha uma opção:\s""");
     }
@@ -121,7 +121,7 @@ public class Main {
         }
     }
 
-    private static void addProject(){
+    private static void addProject(){ // Mudar para LogProcessor
         System.out.print("Nome do Projeto: ");
             String name = scanner.nextLine();
             System.out.print("Orçamento de horas do projeto: ");
@@ -158,6 +158,7 @@ public class Main {
         System.out.println(header);
         System.out.println("Total de tarefas: " + Task.totalTasksCreated);
     }
+    
 
     /**
      * Trunca uma string para um comprimento máximo, acrescentando reticências
