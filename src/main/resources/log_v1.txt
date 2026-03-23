@@ -1,18 +1,6 @@
-CREATE_USER;alice.smith;alice@company.com
-CREATE_USER;bob.jones;bob@company.com
-CREATE_USER;carol.white;carol@company.com
-CREATE_USER;invalid.email;notanemail.txt
-
-CREATE_PROJECT;Backend;120
-CREATE_PROJECT;Frontend;100
-
-CREATE_TASK;Setup Database;2026-03-10;40;Backend
-CREATE_TASK;API Development;2026-03-15;50;Backend
-CREATE_TASK;UI Components;2026-03-20;45;Frontend
-CREATE_TASK;Testing Suite;2026-03-25;35;Frontend
-
-CREATE_TASK;Bug Fixes;2026-03-28;20;Backend
-CREATE_TASK;Optimization;2026-04-01;30;Frontend
-CREATE_TASK;Documentation;2026-04-05;15;Backend
-
-REPORT_STATUS
+CREATE_USER;nicolas.tesla;tesla@energy.com
+CREATE_USER;ada.lovelace;ada@calculus.gb
+CREATE_USER;alan.turing;alan@bletchley.org
+CREATE_TASK;Configurar Banco de Dados;2026-03-05
+CREATE_TASK;Implementar Autenticacao;2026-03-10
+CREATE_TASK;Ajustar Layout Mobile;2026-03-15

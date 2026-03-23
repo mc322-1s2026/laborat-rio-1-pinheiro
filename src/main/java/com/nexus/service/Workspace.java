@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.nexus.model.Project;
 import com.nexus.model.Task;
 import com.nexus.model.TaskStatus;
 import com.nexus.model.User;
@@ -13,6 +14,7 @@ import com.nexus.model.User;
 
 public class Workspace {
     private final List<Task> tasks = new ArrayList<>();
+    private final List<Project> projects = new ArrayList<>();
 
     public void addTask(Task task) {
         tasks.add(task);
@@ -89,10 +91,26 @@ public class Workspace {
 
     }
 
-    public Task getTask(int id){
+    public Task findTask(int id){
         return tasks.stream()
             .filter(t -> t.getId() == id).findFirst()
             .orElse(null);
+    }
+
+    public Task findProject(int id){
+        return tasks.stream()
+            .filter(t -> t.getId() == id).findFirst()
+            .orElse(null);
+    }
+
+    public double Projetc_Health(){
+        long completed_tasks = this.tasks.stream()
+            .filter(Task -> Task.getStatus() == TaskStatus.DONE)
+            .count();
+
+        long total_tasks = this.tasks.size();
+
+        return (double) completed_tasks * 100 / total_tasks;
     }
 
     public void reportStatus(){
