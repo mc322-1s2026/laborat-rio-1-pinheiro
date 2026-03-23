@@ -107,7 +107,7 @@ public class Workspace {
 
     public Project findProject(String nome){
         return projects.stream()
-            .filter(t -> t.getNome().equals(nome))
+            .filter(t -> t.getNome().equalsIgnoreCase(nome))
             .findFirst()
             .orElse(null);
     }
@@ -121,7 +121,10 @@ public class Workspace {
 
         long total_tasks = project.getProjectTasks().size();
 
-        return (double) completed_tasks * 100 / total_tasks;
+        if(total_tasks == 0)
+            return 0.0;
+        else
+            return (double) completed_tasks * 100 / total_tasks;
     }
 
     public void reportStatus(){
