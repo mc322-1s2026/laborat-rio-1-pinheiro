@@ -143,6 +143,9 @@ public class Main {
                 scanner.nextLine(); // consumir o espaço
 
                 Project newProject = new Project(name,totalBudget);
+
+                workspace.addProject(newProject);
+
                 System.out.println("[OK] Projeto foi criado com sucesso.");
             } catch (java.util.InputMismatchException e) {
                 throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
