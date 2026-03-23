@@ -20,9 +20,17 @@ public class Workspace {
         tasks.add(task);
     }
 
+    public void addProject(Project project){
+        projects.add(project);
+    }
+
     public List<Task> getTasks() {
         // Retorna uma visão não modificável para garantir encapsulamento
         return Collections.unmodifiableList(tasks);
+    }
+
+    public List<Project> getProjects(){
+        return Collections.unmodifiableList(projects);
     }
 
     /*Imprime os três usuarios com mais tasks DONE */
@@ -92,23 +100,26 @@ public class Workspace {
     }
 
     public Task findTask(int id){
-        return tasks.stream()
+        return getTasks().stream()
             .filter(t -> t.getId() == id).findFirst()
             .orElse(null);
     }
 
-    public Task findProject(int id){
-        return tasks.stream()
-            .filter(t -> t.getId() == id).findFirst()
+    public Project findProject(String nome){
+        return projects.stream()
+            .filter(t -> t.getNome().equals(nome))
+            .findFirst()
             .orElse(null);
     }
 
-    public double Projetc_Health(){
-        long completed_tasks = this.tasks.stream()
+    public double projetcHealth(String nome){
+        Project project = findProject(nome);
+
+        long completed_tasks = project.getProjectTasks().stream()
             .filter(Task -> Task.getStatus() == TaskStatus.DONE)
             .count();
 
-        long total_tasks = this.tasks.size();
+        long total_tasks = project.getProjectTasks().size();
 
         return (double) completed_tasks * 100 / total_tasks;
     }

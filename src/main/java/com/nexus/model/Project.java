@@ -40,4 +40,7 @@ public class Project {
         }
     }
 
+    // Getters
+    public String getNome() { return nome; }
+    public List<Task> getProjectTasks() {return tasks;}
 }

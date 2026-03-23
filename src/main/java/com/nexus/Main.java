@@ -55,6 +55,12 @@ public class Main {
                     String file = (logChoice.equals("1")) ? "log_v1.txt" : "log_v2.txt";
                     logProcessor.processLog(file, workspace, users);
                 }
+
+                case "teste" -> {
+                    String nome = scanner.nextLine();
+                    System.out.println(workspace.projetcHealth(nome));
+                }
+
                 default -> System.out.println("\n[!] Opção inválida.");
             }
         }
