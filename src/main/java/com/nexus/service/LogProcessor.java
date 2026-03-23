@@ -50,7 +50,22 @@ public class LogProcessor {
                             }
 
                             case "CHANGE_STATUS" -> {
-         
+                                if(workspace.findTask(Integer.parseInt(p[1])) == null){ // Para id vazio lançar exceção ou apenas dizer que não existe?
+                                    System.out.println("A tarefa não existe: ");
+                                    return;
+                                }
+                                switch (p[2]) {
+                                    case "IN_PROGRESS" -> {
+                                         
+                                    }
+                                    case "DONE" -> {
+
+                                    }
+                                    case "BLOCKED" -> {
+
+                                    }
+                                    default -> System.err.println("[WARN] Status desconhecida: " + p[2]);
+                                }
                             }
 
                             case "REPORT_STATUS" -> {
