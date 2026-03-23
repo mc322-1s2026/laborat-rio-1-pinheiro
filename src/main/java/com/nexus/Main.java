@@ -112,6 +112,7 @@ public class Main {
             LocalDate deadline = LocalDate.parse(scanner.nextLine());
             System.out.print("Horas estimadas para conclusão: ");
             int estimatedEffort =  scanner.nextInt();
+            scanner.nextLine(); // consumir o espaço
 
             Task newTask = new Task(title, deadline, estimatedEffort);
             workspace.addTask(newTask);
@@ -133,6 +134,7 @@ public class Main {
                 String name = scanner.nextLine();
                 System.out.print("Orçamento de horas do projeto: ");
                 int totalBudget =  scanner.nextInt();
+                scanner.nextLine(); // consumir o espaço
 
                 Project newProject = new Project(name,totalBudget);
                 System.out.println("[OK] Projeto foi criado com sucesso.");

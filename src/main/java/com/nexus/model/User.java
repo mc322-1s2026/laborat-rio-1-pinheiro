@@ -13,8 +13,9 @@ public class User {
             throw new IllegalArgumentException("Email não pode ser vazio."); //Existe uma redundância nesse teste em relação ao próximo, mas preferi fazer assim para imprimir um texto apropriado.
         }
 
-        else if (!email.contains("@") || !email.contains(".com")) {
-            throw new IllegalArgumentException("Domínio do email inválido.");
+        //No README a definição do email valido foi "usuario@dominio.com"
+        else if (!email.matches("^[^@\\s]+@[^@\\s]+\\.com")) {
+            throw new IllegalArgumentException("Email inválido.");
         }
         
         this.username = username;

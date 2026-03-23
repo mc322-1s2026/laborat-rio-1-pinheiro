@@ -14,7 +14,7 @@ public class LogProcessor {
         try {
             // Busca o arquivo dentro da pasta de recursos do projeto (target/classes)
             var resource = getClass().getClassLoader().getResourceAsStream(fileName);
-            
+
             if (resource == null) {
                 throw new IOException("Arquivo não encontrado no classpath: " + fileName);
             }
@@ -22,31 +22,55 @@ public class LogProcessor {
             try (java.util.Scanner s = new java.util.Scanner(resource).useDelimiter("\\A")) {
                 String content = s.hasNext() ? s.next() : "";
                 List<String> lines = List.of(content.split("\\R"));
-                
+
                 for (String line : lines) {
                     if (line.isBlank() || line.startsWith("#")) continue;
 
-                    String[] p = line.split(";");
-                    String action = p[0];
-
                     try {
+                        String[] p = line.split(";");
+                        String action = p[0];
+
                         switch (action) {
+
                             case "CREATE_USER" -> {
+                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes"); 
                                 users.add(new User(p[1], p[2]));
                                 System.out.println("[LOG] Usuário criado: " + p[1]);
                             }
+
                             case "CREATE_TASK" -> {
+                                if (p.length < 4) throw new IllegalArgumentException("Parâmetros insuficientes"); 
                                 Task t = new Task(p[1], LocalDate.parse(p[2]), Integer.parseInt(p[3]));
                                 workspace.addTask(t);
                                 System.out.println("[LOG] Tarefa criada: " + p[1]);
                             }
+
+                            case "ASSIGN_USER" -> {
+
+                            }
+
+                            case "CHANGE_STATUS" -> {
+         
+                            }
+
+                            case "REPORT_STATUS" -> {
+                                workspace.reportStatus();
+                            }
+
                             default -> System.err.println("[WARN] Ação desconhecida: " + action);
                         }
+
                     } catch (NexusValidationException e) {
-                        System.err.println("[ERRO DE REGRAS] Falha no comando '" + line + "': " + e.getMessage());
+                        Task.totalValidationErrors++;
+                        System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
+
+                    } catch (Exception e) {
+                        Task.totalValidationErrors++;
+                        System.err.println("[ERRO] Linha '" + line + "': " + e.getMessage());
                     }
                 }
             }
+
         } catch (IOException e) {
             System.err.println("[ERRO FATAL] " + e.getMessage());
         }
