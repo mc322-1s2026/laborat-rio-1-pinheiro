@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.nexus.exception.NexusValidationException;
+import com.nexus.model.Project;
 import com.nexus.model.Task;
 import com.nexus.model.User;
 import com.nexus.service.LogProcessor;
@@ -46,8 +47,9 @@ public class Main {
                 }
                 case "1" -> addUser();
                 case "2" -> addTask();
-                case "3" -> listTasks();
-                case "4" -> {
+                case "3" -> addProject();
+                case "4" -> listTasks();
+                case "5" -> {
                     System.out.println("1. Carregar Log V1 (Básico)\n2. Carregar Log V2 (Desafio)");
                     String logChoice = scanner.nextLine();
                     String file = (logChoice.equals("1")) ? "log_v1.txt" : "log_v2.txt";
@@ -70,8 +72,9 @@ public class Main {
             ======= NEXUS CORE: MENU =======
             1. Adicionar Usuário
             2. Adicionar Tarefa
-            3. Listar Todas as Tarefas
-            4. Processar Log de Ações
+            3. Adicionar Projeto
+            4. Listar Todas as Tarefas
+            5. Processar Log de Ações
             0. Sair
             Escolha uma opção:\s""");
     }
@@ -107,13 +110,37 @@ public class Main {
             String title = scanner.nextLine();
             System.out.print("Prazo (AAAA-MM-DD): ");
             LocalDate deadline = LocalDate.parse(scanner.nextLine());
+            System.out.print("Horas estimadas para conclusão: ");
+            int estimatedEffort =  scanner.nextInt();
+            scanner.nextLine(); // consumir o espaço
 
-            Task newTask = new Task(title, deadline);
+            Task newTask = new Task(title, deadline, estimatedEffort);
             workspace.addTask(newTask);
             System.out.println("[OK] Tarefa adicionada ao backlog.");
-        } catch (DateTimeParseException e) {
-            System.err.println("[ERRO] Formato de data inválido. Use AAAA-MM-DD.");
+        } 
+        
+        catch (DateTimeParseException e) {
+            System.err.println("Horas estimadas deve ser um número.");
+        } 
+        
+        catch (java.util.InputMismatchException e){
+            throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
         }
+    }
+
+    private static void addProject(){
+            try {
+                System.out.print("Nome do Projeto: ");
+                String name = scanner.nextLine();
+                System.out.print("Orçamento de horas do projeto: ");
+                int totalBudget =  scanner.nextInt();
+                scanner.nextLine(); // consumir o espaço
+
+                Project newProject = new Project(name,totalBudget);
+                System.out.println("[OK] Projeto foi criado com sucesso.");
+            } catch (java.util.InputMismatchException e) {
+                throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
+            }
     }
 
     /**
