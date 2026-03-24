@@ -167,6 +167,11 @@ public class Main {
             try {
                 System.out.print("Nome do Projeto: ");
                 String name = scanner.nextLine();
+
+                if(workspace.findProject(name, workspace.getProjects()) != null){
+                    throw new IllegalArgumentException("Projeto já está no sistema");
+                }
+
                 System.out.print("Orçamento de horas do projeto: ");
                 
                 String totalBudget =  scanner.nextLine();
@@ -180,6 +185,8 @@ public class Main {
                 throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
             } catch (NumberFormatException e){
                 System.err.println("\n[ERRO DE FORMATAÇÃO DE NÚMERO]");
+            } catch (IllegalArgumentException e) {
+                System.err.println("\nProjeto já está no sistema");
             }
     }
 

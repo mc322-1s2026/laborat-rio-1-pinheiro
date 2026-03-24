@@ -89,17 +89,18 @@ public class Workspace {
             .collect(Collectors.groupingBy(
                 Task::getOwner,
                 Collectors.counting()
-            ));
+            ))
+            .entrySet().stream()
+            .filter(entry -> entry.getValue() > 10)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));;
 
         if(busyUsers.isEmpty()){
             System.out.println("[!] Nenhum usuario possui mais de 10 tarefas em progresso.");
             return;
         }
 
-        busyUsers.entrySet().stream()
-            .filter(entry -> entry.getValue() > 10)
-            .forEach(usuarios -> {
-                System.out.println(usuarios.getKey().consultUsername());
+        busyUsers.forEach((usuarios, qnt) -> {
+                System.out.println(usuarios.consultUsername());
             });
 
     }
@@ -129,9 +130,9 @@ public class Workspace {
         long total_tasks = p.getProjectTasks().size();
 
         if(total_tasks == 0)
-            System.out.println(p.getNome()+ " " + 0.0);
+            System.out.println(p.getNome()+ " " + 0.0 + "%");
         else
-            System.out.println(p.getNome() + " " + completed_tasks * 100 / total_tasks);
+            System.out.println(p.getNome() + " " + completed_tasks * 100 / total_tasks + "%");
         });
 
     }
@@ -144,7 +145,7 @@ public class Workspace {
         System.out.println("\nUsuarios com carga de trabalho maior que 10:");
         overloadedUsers(getTasks());
 
-        System.out.println("\nStatus com maior número de tasks:");
+        System.out.println("\nStatus com maior número de tasks (exceto DONE):");
         globalBottleNecks(getTasks());
 
         System.out.println("\nUsuarios com mais tasks concluidas:");
