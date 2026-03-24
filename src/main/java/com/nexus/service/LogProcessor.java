@@ -109,7 +109,12 @@ public class LogProcessor {
                             }
 
                             case "CREATE_PROJECT" -> {
-                                if (p.length < 2) throw new IllegalArgumentException("Parâmetros insuficientes"); 
+                                if (p.length < 2) throw new IllegalArgumentException("Parâmetros insuficientes");
+
+                                if(workspace.findProject(p[1], workspace.getProjects()) != null){
+                                    throw new IllegalArgumentException("Projeto já está no sistema");
+                                }
+
                                 Project project = new Project(p[1], Integer.parseInt(p[2]));
                                 workspace.addProject(project);
                                 System.out.println("[LOG] Projeto criado: " + p[1]);

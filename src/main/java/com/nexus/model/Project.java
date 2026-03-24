@@ -24,6 +24,7 @@ public class Project {
         }
 
 
+
         this.nome = nome;
         this.tasks = new ArrayList<>();
         this.totalBudget = totalBudget;
