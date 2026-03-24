@@ -34,8 +34,8 @@ public class Workspace {
     }
 
     /*Imprime os três usuarios com mais tasks DONE */
-    public void topPerformers(List<Task> tasks){
-        Map<User, Long> topOwners = tasks.stream()
+    public void topPerformers(List<Task> getTasks){
+        Map<User, Long> topOwners = getTasks.stream()
             .filter(Task -> Task.getStatus() == TaskStatus.DONE)
             .collect(Collectors.groupingBy(
                 Task::getOwner,
@@ -50,16 +50,16 @@ public class Workspace {
         topOwners.entrySet().stream()
             .sorted(Map.Entry.<User,Long>comparingByValue().reversed())
             .limit(3)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList())
-            .forEach(System.out::println);
+            .forEach(usuarios -> {
+                System.out.println(usuarios.getKey().consultUsername());
+            });
 
     }
 
     /*Imprime o(s) status com maior(es) número(s) de Tasks, exceto DONE */
-    public void globalBottleNecks(List<Task> tasks){
+    public void globalBottleNecks(List<Task> getTasks){
 
-        Map<TaskStatus, Long> topTasks = tasks.stream()
+        Map<TaskStatus, Long> topTasks = getTasks.stream()
         .filter(Task -> Task.getStatus() != TaskStatus.DONE)
         .collect(Collectors.groupingBy(
             Task::getStatus,
@@ -83,8 +83,8 @@ public class Workspace {
     }
 
     /*Imprime os usuários que possuem carga de trabalho maior que 10*/
-    public void overloadedUsers(List<Task> tasks){
-        Map<User, Long> busyUsers = tasks.stream()
+    public void overloadedUsers(List<Task> getTasks){
+        Map<User, Long> busyUsers = getTasks.stream()
             .filter(Task -> Task.getStatus() == TaskStatus.IN_PROGRESS)
             .collect(Collectors.groupingBy(
                 Task::getOwner,
@@ -93,11 +93,13 @@ public class Workspace {
 
         busyUsers.entrySet().stream()
             .filter(entry -> entry.getValue() > 10)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList())
-            .forEach(System.out::println);
+            .forEach(usuarios -> {
+                System.out.println(usuarios.getKey().consultUsername());
+            });
 
     }
+
+
 
     public Task findTask(int id){
         return getTasks().stream()
@@ -105,26 +107,28 @@ public class Workspace {
             .orElse(null);
     }
 
-    public Project findProject(String nome){
-        return projects.stream()
+    public Project findProject(String nome, List<Project> getProjects){
+        return getProjects.stream()
             .filter(t -> t.getNome().equalsIgnoreCase(nome))
             .findFirst()
             .orElse(null);
     }
 
-    public double projetcHealth(String nome){
-        Project project = findProject(nome);
+    public void projectHealth(List<Project> getProjects){
+         getProjects.stream().forEach(p ->{
 
-        long completed_tasks = project.getProjectTasks().stream()
-            .filter(Task -> Task.getStatus() == TaskStatus.DONE)
+        long completed_tasks = p.getProjectTasks().stream()
+            .filter(t -> t.getStatus() == TaskStatus.DONE)
             .count();
 
-        long total_tasks = project.getProjectTasks().size();
+        long total_tasks = p.getProjectTasks().size();
 
         if(total_tasks == 0)
-            return 0.0;
+            System.out.println(p.getNome()+ " " + 0.0);
         else
-            return (double) completed_tasks * 100 / total_tasks;
+            System.out.println(p.getNome() + " " + completed_tasks * 100 / total_tasks);
+        });
+
     }
 
     public void reportStatus(){
@@ -133,12 +137,17 @@ public class Workspace {
             return;
         }
         System.out.println("\nUsuarios com carga de trabalho maior que 10:");
-        overloadedUsers(tasks);
+        overloadedUsers(getTasks());
 
         System.out.println("\nStatus com maior número de tasks:");
-        globalBottleNecks(tasks);
+        globalBottleNecks(getTasks());
 
         System.out.println("\nUsuarios com mais taks concluidas:");
-        topPerformers(tasks);
+        topPerformers(getTasks());
+
+        System.out.println("\nPorcentagem de tarefas concluidas:");
+        projectHealth(getProjects());
+
+
     }
 }
