@@ -125,12 +125,18 @@ public class Main {
             System.out.print("Prazo (AAAA-MM-DD): ");
             LocalDate deadline = LocalDate.parse(scanner.nextLine());
             System.out.print("Horas estimadas para conclusão: ");
-            int estimatedEffort =  scanner.nextInt();
-            scanner.nextLine(); // consumir o espaço
+            
+            try{
+                String  estimatedEffort =  scanner.nextLine();
 
-            Task newTask = new Task(title, deadline, estimatedEffort);
-            workspace.addTask(newTask);
-            System.out.println("[OK] Tarefa adicionada ao backlog.");
+                Task newTask = new Task(title, deadline, Integer.parseInt(estimatedEffort));
+                workspace.addTask(newTask);
+
+                System.out.println("[OK] Tarefa adicionada ao backlog.");
+
+            } catch(NumberFormatException e){
+                System.err.println("\n[ERRO DE FORMATAÇÃO DE NÚMERO]");
+            }
         } 
         
         catch (DateTimeParseException e) {
@@ -147,16 +153,18 @@ public class Main {
                 System.out.print("Nome do Projeto: ");
                 String name = scanner.nextLine();
                 System.out.print("Orçamento de horas do projeto: ");
-                int totalBudget =  scanner.nextInt();
-                scanner.nextLine(); // consumir o espaço
+                
+                String totalBudget =  scanner.nextLine();
 
-                Project newProject = new Project(name,totalBudget);
+                Project newProject = new Project(name, Integer.parseInt(totalBudget));
 
                 workspace.addProject(newProject);
 
-                System.out.println("[OK] Projeto foi criado com sucesso.");
+                System.out.println("\n[OK] Projeto foi criado com sucesso.");
             } catch (java.util.InputMismatchException e) {
                 throw new IllegalArgumentException("Orçamento de horas deve ser um número.");
+            } catch (NumberFormatException e){
+                System.err.println("\n[ERRO DE FORMATAÇÃO DE NÚMERO]");
             }
     }
 

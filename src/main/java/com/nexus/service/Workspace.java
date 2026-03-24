@@ -36,7 +36,7 @@ public class Workspace {
     /*Imprime os três usuarios com mais tasks DONE */
     public void topPerformers(List<Task> getTasks){
         Map<User, Long> topOwners = getTasks.stream()
-            .filter(Task -> Task.getStatus() == TaskStatus.DONE)
+            .filter(Task -> Task.getOwner() != null && Task.getStatus() == TaskStatus.DONE)
             .collect(Collectors.groupingBy(
                 Task::getOwner,
                 Collectors.counting()
@@ -60,7 +60,7 @@ public class Workspace {
     public void globalBottleNecks(List<Task> getTasks){
 
         Map<TaskStatus, Long> topTasks = getTasks.stream()
-        .filter(Task -> Task.getStatus() != TaskStatus.DONE)
+        .filter(Task -> Task.getOwner() != null && Task.getStatus() != TaskStatus.DONE)
         .collect(Collectors.groupingBy(
             Task::getStatus,
             Collectors.counting()
@@ -85,11 +85,16 @@ public class Workspace {
     /*Imprime os usuários que possuem carga de trabalho maior que 10*/
     public void overloadedUsers(List<Task> getTasks){
         Map<User, Long> busyUsers = getTasks.stream()
-            .filter(Task -> Task.getStatus() == TaskStatus.IN_PROGRESS)
+            .filter(Task -> Task.getOwner() != null && Task.getStatus() == TaskStatus.IN_PROGRESS)
             .collect(Collectors.groupingBy(
                 Task::getOwner,
                 Collectors.counting()
             ));
+
+        if(busyUsers.isEmpty()){
+            System.out.println("[!] Nenhum usuario possui mais de 10 tarefas em progresso.");
+            return;
+        }
 
         busyUsers.entrySet().stream()
             .filter(entry -> entry.getValue() > 10)
@@ -103,13 +108,13 @@ public class Workspace {
 
     public Task findTask(int id){
         return getTasks().stream()
-            .filter(t -> t.getId() == id).findFirst()
+            .filter(t -> t != null && t.getId() == id).findFirst()
             .orElse(null);
     }
 
     public Project findProject(String nome, List<Project> getProjects){
         return getProjects.stream()
-            .filter(t -> t.getNome().equalsIgnoreCase(nome))
+            .filter(t -> t != null && t.getNome().equalsIgnoreCase(nome))
             .findFirst()
             .orElse(null);
     }
@@ -118,7 +123,7 @@ public class Workspace {
          getProjects.stream().forEach(p ->{
 
         long completed_tasks = p.getProjectTasks().stream()
-            .filter(t -> t.getStatus() == TaskStatus.DONE)
+            .filter(t -> t != null && t.getStatus() == TaskStatus.DONE)
             .count();
 
         long total_tasks = p.getProjectTasks().size();
@@ -142,11 +147,17 @@ public class Workspace {
         System.out.println("\nStatus com maior número de tasks:");
         globalBottleNecks(getTasks());
 
-        System.out.println("\nUsuarios com mais taks concluidas:");
+        System.out.println("\nUsuarios com mais tasks concluidas:");
         topPerformers(getTasks());
 
         System.out.println("\nPorcentagem de tarefas concluidas:");
         projectHealth(getProjects());
+
+        System.out.println("\nQuantidade de tasks ativas: " + Task.activeWorkload);
+
+        System.out.println("\nQuantidade de tasks criadas: " + Task.totalTasksCreated);
+
+        System.out.println("\nQuantidade de erros de validação: " + Task.totalValidationErrors);
 
 
     }

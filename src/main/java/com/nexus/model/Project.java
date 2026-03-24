@@ -6,9 +6,9 @@ import java.util.List;
 import com.nexus.exception.NexusValidationException;
 
 public class Project {
-    private String nome;
-    private List<Task> tasks; //lembrar de n deixar ter tasks com mesmo nome dentro do mesmo projeto
-    private int totalBudget;
+    private final String nome;
+    private final List<Task> tasks; 
+    private final int totalBudget;
 
     private  int currentBudget;
 
@@ -34,8 +34,10 @@ public class Project {
         if (T.getEstimatedEffort() + currentBudget <= this.totalBudget ){
             this.currentBudget += T.getEstimatedEffort();
             this.tasks.add(T);
+            Task.totalTasksCreated++;
         }
         else{
+            Task.totalValidationErrors++;
             throw new NexusValidationException("Excedeu o budget de tempo.");
         }
     }
