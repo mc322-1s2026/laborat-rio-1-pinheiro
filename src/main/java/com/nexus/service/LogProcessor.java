@@ -41,43 +41,51 @@ public class LogProcessor {
                             }
 
                             case "CREATE_TASK" -> {
-                                if (p.length < 4) throw new IllegalArgumentException("Parâmetros insuficientes"); 
-                                Task t = new Task(p[1], LocalDate.parse(p[2]), Integer.parseInt(p[3]));
-                                workspace.addTask(t);
-                                Project currentProject = workspace.findProject(p[4], workspace.getProjects());
-                                currentProject.addTask(t);
-                                System.out.println("[LOG] Tarefa criada: " + p[1]);
+                                if (p.length < 5) throw new IllegalArgumentException("Parâmetros insuficientes"); 
+                                try{
+                                    Task t = new Task(p[1], LocalDate.parse(p[2]), Integer.parseInt(p[3]));
+                                    Project currentProject = workspace.findProject(p[4], workspace.getProjects());
+                                    if(currentProject == null){
+                                        throw new IllegalArgumentException(" O projeto não existe");
+                                    }
+                                    currentProject.addTask(t);
+                                    workspace.addTask(t);
+                                    System.out.println("[LOG] Tarefa criada: " + p[1]);
+                                }catch(NexusValidationException e){
+                                    System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
+                                }
+                                
                             }
 
                             case "ASSIGN_USER" -> {
-                                User currentUser = Main.findUser(p[2]);
+                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes"); 
+                                try{
+                                    if(p[2].isBlank() || p[2] == null){
+                                        throw new IllegalArgumentException(" User vazio");
+                                    }
+                                    User currentUser = Main.findUser(p[2]);
 
-                                if(currentUser == null){ // Para user que não existe lançar exceção ou apenas dizer que não existe?
-                                    System.out.println("O usuário não existe não existe: ");
-                                    return;
+                                    if(currentUser == null){
+                                        throw new IllegalArgumentException(" User não encontrado");
+                                    }
+
+                                    Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
+
+                                    currentTask.assignUser(currentUser);
+                                }catch(IllegalArgumentException e){
+                                     System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
                                 }
-
-                                Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
-
-                                if(currentTask == null){ // Para id vazio lançar exceção ou apenas dizer que não existe?
-                                    System.out.println("A tarefa não existe: ");
-                                    return;
-                                }
-
-                                currentTask.assignUser(currentUser);
 
 
                             }
 
                             case "CHANGE_STATUS" -> {
-                                Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
+                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes"); 
+                                
 
-                                if(currentTask == null){ // Para id vazio lançar exceção ou apenas dizer que não existe?
-                                    System.out.println("A tarefa não existe: ");
-                                    return;
-                                }
-
-                                switch (p[2]) {
+                                try {
+                                    Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
+                                    switch (p[2]) {
                                     case "IN_PROGRESS" -> {
                                         currentTask.moveToInProgress();
                                     }
@@ -89,6 +97,11 @@ public class LogProcessor {
                                     }
                                     default -> System.err.println("[WARN] Status desconhecida: " + p[2]);
                                 }
+                                } catch (Exception e) {
+                                    System.err.println("Tarefa não existe");
+                                }
+
+                                
                             }
 
                             case "REPORT_STATUS" -> {
@@ -108,9 +121,12 @@ public class LogProcessor {
                     } catch (NexusValidationException e) {
                         Task.totalValidationErrors++;
                         System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
+                    
 
-                    } catch (Exception e) {
-                        Task.totalValidationErrors++;
+                    } catch(NumberFormatException e){
+                        System.err.println("[ERRO DE FORMATAÇÃO DE NÚMERO] Linha '" + line + "': " + e.getMessage());
+
+                    }catch (Exception e) {
                         System.err.println("[ERRO] Linha '" + line + "': " + e.getMessage());
                     }
                 }

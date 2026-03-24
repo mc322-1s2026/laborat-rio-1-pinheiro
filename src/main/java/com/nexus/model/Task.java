@@ -23,6 +23,10 @@ public class Task {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Titulo não pode ser vazio.");
         }
+
+        if(estimatedEffort <= 0){
+             throw new IllegalArgumentException("O esforço não pode ser negativo");
+        }
         
         this.id = nextId++;
         this.deadline = deadline;
@@ -30,15 +34,14 @@ public class Task {
         this.status = TaskStatus.TO_DO;
         this.estimatedEffort = estimatedEffort;
         
-        // Ação do Aluno:
-        totalTasksCreated++; 
+         
     }
 
     /**
      * Move a tarefa para IN_PROGRESS.
      * Regra: Só é possível se houver um owner atribuído e não estiver BLOCKED.
      */
-    public void moveToInProgress() { // Consertar ainda, quando criar assignUser
+    public void moveToInProgress() {
         // TODO: Implementar lógica de proteção e atualizar activeWorkload 
         // Se falhar, incrementar totalValidationErrors e lançar NexusValidationException
         if (this.owner == null || this.status == TaskStatus.BLOCKED){  
@@ -75,9 +78,11 @@ public class Task {
         } else {
             this.status = TaskStatus.TO_DO; // Simplificação para o Lab
         }
+        activeWorkload--;
     }
 
     public void assignUser(User user){
+        
         this.owner = user;
     }
 
