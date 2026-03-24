@@ -44,7 +44,7 @@ public class Task {
     public void moveToInProgress() {
         // TODO: Implementar lógica de proteção e atualizar activeWorkload 
         // Se falhar, incrementar totalValidationErrors e lançar NexusValidationException
-        if (this.owner == null || this.status == TaskStatus.BLOCKED){  
+        if (this.owner == null || this.status == TaskStatus.BLOCKED || this.status == TaskStatus.IN_PROGRESS){  
             totalValidationErrors++;
             throw new NexusValidationException("A tarefa não pode ser movida para Em Progresso");
         } 
@@ -59,7 +59,7 @@ public class Task {
      */
     public void markAsDone() {
         // TODO: Implementar lógica de proteção e atualizar activeWorkload (decrementar)
-        if(this.status == TaskStatus.BLOCKED){
+        if(this.status == TaskStatus.BLOCKED || this.status == TaskStatus.DONE){
             totalValidationErrors++;
             throw new NexusValidationException("A tarefa não pode ser movida para Finalizada");
         }
@@ -69,7 +69,7 @@ public class Task {
     }
 
     public void setBlocked(boolean blocked) {
-        if(this.status == TaskStatus.DONE) {
+        if(this.status == TaskStatus.DONE || this.status == TaskStatus.BLOCKED) {
             totalValidationErrors++;
             throw new NexusValidationException("Tarefas finalizadas não podem ser bloqueadas");
         }
