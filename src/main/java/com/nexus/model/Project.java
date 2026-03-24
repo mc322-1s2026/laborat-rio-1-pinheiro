@@ -17,6 +17,7 @@ public class Project {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do projeto não pode ser vazio.");
         }
+        
 
         if (totalBudget < 0) {
             throw new IllegalArgumentException("Orçamento de horas deve ser maior que zero.");

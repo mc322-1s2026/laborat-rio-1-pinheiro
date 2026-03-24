@@ -130,13 +130,28 @@ public class Main {
                 String  estimatedEffort =  scanner.nextLine();
 
                 Task newTask = new Task(title, deadline, Integer.parseInt(estimatedEffort));
+
+                System.out.print("Projeto que essa task faz parte: ");
+                String project = scanner.nextLine();
+
+                Project currentProject = workspace.findProject(project, workspace.getProjects());
+                if(currentProject == null){
+                    throw new IllegalArgumentException("O projeto não existe");
+                }
+                
+                currentProject.addTask(newTask);
                 workspace.addTask(newTask);
+                
 
                 System.out.println("[OK] Tarefa adicionada ao backlog.");
 
             } catch(NumberFormatException e){
                 System.err.println("\n[ERRO DE FORMATAÇÃO DE NÚMERO]");
+            
+            } catch(NexusValidationException e){
+                System.err.println("[ERRO DE REGRAS] Tarefa excede o limite de horas do projeto");
             }
+
         } 
         
         catch (DateTimeParseException e) {

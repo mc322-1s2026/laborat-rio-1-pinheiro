@@ -46,13 +46,13 @@ public class LogProcessor {
                                     Task t = new Task(p[1], LocalDate.parse(p[2]), Integer.parseInt(p[3]));
                                     Project currentProject = workspace.findProject(p[4], workspace.getProjects());
                                     if(currentProject == null){
-                                        throw new IllegalArgumentException(" O projeto não existe");
+                                        throw new IllegalArgumentException("O projeto não existe");
                                     }
                                     currentProject.addTask(t);
                                     workspace.addTask(t);
                                     System.out.println("[LOG] Tarefa criada: " + p[1]);
                                 }catch(NexusValidationException e){
-                                    System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
+                                    System.err.println("[ERRO DE REGRAS] Tarefa excede o limite de horas do projeto");
                                 }
                                 
                             }
@@ -73,7 +73,7 @@ public class LogProcessor {
 
                                     currentTask.assignUser(currentUser);
                                 }catch(IllegalArgumentException e){
-                                     System.err.println("[ERRO DE REGRAS] Linha '" + line + "': " + e.getMessage());
+                                     System.err.println("[ERRO] Tarefa " +Integer.parseInt(p[1]) +  " não existe");
                                 }
 
 
@@ -98,7 +98,7 @@ public class LogProcessor {
                                     default -> System.err.println("[WARN] Status desconhecida: " + p[2]);
                                 }
                                 } catch (Exception e) {
-                                    System.err.println("Tarefa não existe");
+                                    System.err.println("[ERRO] Tarefa " +Integer.parseInt(p[1]) +  " não existe");
                                 }
 
                                 
@@ -126,6 +126,8 @@ public class LogProcessor {
                     } catch(NumberFormatException e){
                         System.err.println("[ERRO DE FORMATAÇÃO DE NÚMERO] Linha '" + line + "': " + e.getMessage());
 
+                    }catch (NullPointerException e) {
+                        System.err.println("[ERRO] Argumento inválido");
                     }catch (Exception e) {
                         System.err.println("[ERRO] Linha '" + line + "': " + e.getMessage());
                     }
