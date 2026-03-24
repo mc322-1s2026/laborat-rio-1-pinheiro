@@ -3,6 +3,7 @@ package com.nexus;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,6 +28,10 @@ public class Main {
     private static final Workspace workspace = new Workspace();
     private static final List<User> users = new ArrayList<>();
     private static final LogProcessor logProcessor = new LogProcessor();
+
+    public static List<User> getUsers(){
+        return Collections.unmodifiableList(users);
+    } 
 
     /**
      * Inicia a aplicação e processa comandos do usuário até a terminação.
@@ -56,10 +61,6 @@ public class Main {
                     logProcessor.processLog(file, workspace, users);
                 }
 
-                case "teste" -> {
-                    String nome = scanner.nextLine();
-                    System.out.println(workspace.projetcHealth(nome));
-                }
 
                 default -> System.out.println("\n[!] Opção inválida.");
             }
@@ -103,6 +104,13 @@ public class Main {
         } catch (NexusValidationException e) {
             System.err.println("[ERRO] " + e.getMessage());
         }
+    }
+
+    public static User findUser(String nome){
+        return getUsers().stream()
+            .filter(u -> u.consultUsername().equalsIgnoreCase(nome))
+            .findFirst()
+            .orElse(null);
     }
 
     /**

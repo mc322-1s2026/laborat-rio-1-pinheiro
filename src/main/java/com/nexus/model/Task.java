@@ -38,14 +38,14 @@ public class Task {
      * Move a tarefa para IN_PROGRESS.
      * Regra: Só é possível se houver um owner atribuído e não estiver BLOCKED.
      */
-    public void moveToInProgress(User user) { // Consertar ainda, quando criar assignUser
+    public void moveToInProgress() { // Consertar ainda, quando criar assignUser
         // TODO: Implementar lógica de proteção e atualizar activeWorkload 
         // Se falhar, incrementar totalValidationErrors e lançar NexusValidationException
-        if (user == null || this.status == TaskStatus.BLOCKED){  
+        if (this.owner == null || this.status == TaskStatus.BLOCKED){  
             totalValidationErrors++;
             throw new NexusValidationException("A tarefa não pode ser movida para Em Progresso");
         } 
-        this.owner = user;
+
         this.status = TaskStatus.IN_PROGRESS;
         activeWorkload++;
     }
@@ -75,6 +75,10 @@ public class Task {
         } else {
             this.status = TaskStatus.TO_DO; // Simplificação para o Lab
         }
+    }
+
+    public void assignUser(User user){
+        this.owner = user;
     }
 
     // Getters
