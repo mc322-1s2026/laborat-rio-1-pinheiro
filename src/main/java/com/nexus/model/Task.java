@@ -86,6 +86,12 @@ public class Task {
         this.owner = user;
     }
 
+    public static void recallID(){
+        if(nextId > 1){
+            nextId--;
+        }
+    }
+
     // Getters
     public int getId() { return id; }
     public TaskStatus getStatus() { return status; }

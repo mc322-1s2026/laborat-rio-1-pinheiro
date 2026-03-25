@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.nexus.Main;
 import com.nexus.exception.NexusValidationException;
 import com.nexus.model.Project;
 import com.nexus.model.Task;
 import com.nexus.model.User;
-import com.nexus.Main;
 
 public class LogProcessor {
 
@@ -52,56 +52,61 @@ public class LogProcessor {
                                     workspace.addTask(t);
                                     System.out.println("[LOG] Tarefa criada: " + p[1]);
                                 }catch(NexusValidationException e){
+                                    Task.recallID();
                                     System.err.println("[ERRO DE REGRAS] Tarefa excede o limite de horas do projeto");
                                 }
                                 
                             }
 
                             case "ASSIGN_USER" -> {
-                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes"); 
-                                try{
-                                    if(p[2].isBlank() || p[2] == null){
-                                        throw new IllegalArgumentException(" User vazio");
-                                    }
-                                    User currentUser = Main.findUser(p[2]);
+                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes");
 
-                                    if(currentUser == null){
-                                        throw new IllegalArgumentException(" User não encontrado");
-                                    }
+                                String username = p[2];
+                                int taskId = Integer.parseInt(p[1]);
 
-                                    Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
-
-                                    currentTask.assignUser(currentUser);
-                                }catch(IllegalArgumentException e){
-                                     System.err.println("[ERRO] Tarefa " +Integer.parseInt(p[1]) +  " não existe");
+                                if (username == null || username.isBlank()) {
+                                    System.err.println("[ERRO] Usuário vazio");
+                                    break;
                                 }
 
+                                User currentUser = Main.findUser(username);
+                                if (currentUser == null) {
+                                    System.err.println("[ERRO] Usuário não encontrado: " + username);
+                                    break;
+                                }
 
+                                Task currentTask = workspace.findTask(taskId);
+                                if (currentTask == null) {
+                                    System.err.println("[ERRO] Tarefa " + taskId + " não existe");
+                                    break;
+                                }
+
+                                currentTask.assignUser(currentUser);
                             }
 
                             case "CHANGE_STATUS" -> {
-                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes"); 
-                                
+                                if (p.length < 3) throw new IllegalArgumentException("Parâmetros insuficientes");
+
+                                int taskId = Integer.parseInt(p[1]);
+                                String status = p[2];
+
+                                Task currentTask = workspace.findTask(taskId);
+
+                                if (currentTask == null) {
+                                    System.err.println("[ERRO] Tarefa " + taskId + " não existe");
+                                    break;
+                                }
 
                                 try {
-                                    Task currentTask = workspace.findTask(Integer.parseInt(p[1]));
-                                    switch (p[2]) {
-                                    case "IN_PROGRESS" -> {
-                                        currentTask.moveToInProgress();
+                                    switch (status) {
+                                        case "IN_PROGRESS" -> currentTask.moveToInProgress();
+                                        case "DONE" -> currentTask.markAsDone();
+                                        case "BLOCKED" -> currentTask.setBlocked(true);
+                                        default -> System.err.println("[WARN] Status desconhecido: " + status);
                                     }
-                                    case "DONE" -> {
-                                        currentTask.markAsDone();
-                                    }
-                                    case "BLOCKED" -> {
-                                        currentTask.setBlocked(true);
-                                    }
-                                    default -> System.err.println("[WARN] Status desconhecida: " + p[2]);
+                                } catch (NexusValidationException e) {
+                                    System.err.println("[ERRO DE REGRAS] " + e.getMessage());
                                 }
-                                } catch (Exception e) {
-                                    System.err.println("[ERRO] Tarefa " +Integer.parseInt(p[1]) +  " não existe");
-                                }
-
-                                
                             }
 
                             case "REPORT_STATUS" -> {
